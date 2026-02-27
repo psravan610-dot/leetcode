@@ -1,17 +1,6 @@
 import java.util.*;
 
-class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
-
-    TreeNode(int val) {
-        this.val = val;
-    }
-}
-
 class Solution {
-    
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         preorder(root, result);
@@ -21,8 +10,8 @@ class Solution {
     private void preorder(TreeNode node, List<Integer> result) {
         if (node == null) return;
         
-        result.add(node.val);        // Root
-        preorder(node.left, result); // Left
-        preorder(node.right, result);// Right
+        result.add(node.val);      // Visit Root
+        preorder(node.left, result);  // Visit Left
+        preorder(node.right, result); // Visit Right
     }
 }
