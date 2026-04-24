@@ -2,39 +2,46 @@ import java.util.*;
 
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        
+
         List<List<Integer>> graph = new ArrayList<>();
+        int[] indegree = new int[numCourses];
+
+        // Step 1: Initialize graph
         for (int i = 0; i < numCourses; i++) {
             graph.add(new ArrayList<>());
         }
 
-        // Build graph
+        // Step 2: Build graph + indegree
         for (int[] pre : prerequisites) {
-            graph.get(pre[1]).add(pre[0]);
+            int a = pre[0], b = pre[1];
+            graph.get(b).add(a);
+            indegree[a]++;
         }
 
-        int[] state = new int[numCourses]; // 0,1,2
-
+        // Step 3: Add courses with indegree 0
+        Queue<Integer> queue = new LinkedList<>();
         for (int i = 0; i < numCourses; i++) {
-            if (state[i] == 0) {
-                if (dfs(graph, state, i)) return false;
+            if (indegree[i] == 0) {
+                queue.offer(i);
             }
         }
 
-        return true;
-    }
+        // Step 4: Process
+        int count = 0;
 
-    private boolean dfs(List<List<Integer>> graph, int[] state, int node) {
-        if (state[node] == 1) return true;  // cycle found
-        if (state[node] == 2) return false; // already safe
+        while (!queue.isEmpty()) {
+            int course = queue.poll();
+            count++;
 
-        state[node] = 1; // visiting
-
-        for (int neighbor : graph.get(node)) {
-            if (dfs(graph, state, neighbor)) return true;
+            for (int next : graph.get(course)) {
+                indegree[next]--;
+                if (indegree[next] == 0) {
+                    queue.offer(next);
+                }
+            }
         }
 
-        state[node] = 2; // done
-        return false;
+        // Step 5: Check if all courses done
+        return count == numCourses;
     }
 }
